@@ -1,0 +1,11 @@
+cffi
+virtualenvwrapper
+yapf
+ipython
+isort
+pep8-naming
+rope
+jedi
+importmagic
+autopep8
+yapf
