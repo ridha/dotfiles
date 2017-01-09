@@ -1,0 +1,29 @@
+[alias]
+    remotes = remote -v
+    branches = branch -a
+    tags = tag -l
+    ds = diff --staged
+    st = status -sb
+    currentbranch = rev-parse --abbrev-ref HEAD
+    id = rev-parse --short HEAD
+    lg = log --color --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    co = checkout
+
+[color]
+    ui = auto
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[color "diff"]
+    meta = cyan
+    frag = magenta
+    old = red bold
+    new = green bold
+
+[color "branch"]
+    current = red
+    local = yellow
+    remote = green
