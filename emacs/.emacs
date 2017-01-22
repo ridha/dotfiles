@@ -10,6 +10,18 @@
 (display-time-mode 1)
 (column-number-mode 1)
 (blink-cursor-mode -1)
+(size-indication-mode 1)
+(show-paren-mode t)
+;; Highlight selection
+(transient-mark-mode 1)
+(icomplete-mode 1)
+(setq show-paren-style 'parenthesis)
+;; Don't ever use graphic dialog boxes
+(setq use-dialog-box nil)
+;; Smash the training wheels
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'dired-find-alternate-file 'disabled nil)
 
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 (add-to-list 'default-frame-alist '(foreground-color . "green2"))
@@ -20,6 +32,15 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; Don't annoy me with backup files everywhere
+(setq make-backup-files nil)
+(setq auto-save-default nil)
+;; Ask whether to add a final newline
+(setq require-final-newline 'ask)
+
+;; Indenting
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
 
 (setenv "PATH" (concat (getenv "PATH") ":" "/usr/local/bin/"))
 
@@ -54,6 +75,34 @@
 (use-package auto-complete)
 (use-package yaml-mode)
 
+;;;;;;;;;;;
+;; ido-mode
+(use-package ido
+  :ensure t
+  :config
+  (setq ido-enable-prefix nil
+        ido-enable-flex-matching t
+        ido-create-new-buffer 'always
+        ido-use-filename-at-point 'guess
+        ido-max-prospects 10
+        ido-default-file-method 'selected-window
+        ido-auto-merge-work-directories-length -1)
+  (ido-mode +1))
+
+(use-package ido-ubiquitous
+  :ensure t
+  :config
+  (ido-ubiquitous-mode +1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; highlight-parentheses-mode
+
+(define-globalized-minor-mode global-highlight-parentheses-mode
+  highlight-parentheses-mode
+  (lambda ()
+    (highlight-parentheses-mode t)))
+(global-highlight-parentheses-mode t)
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;;fill-column-indicator
 
@@ -70,8 +119,30 @@
 ;; python-mode
 
 (elpy-enable)
-(elpy-use-ipython)
+(setq elpy-disable-backend-error-display 1)
 
 (setq flymake-gui-warnings-enabled nil)
+
+;;;;; flyspell-mode
+(setq-default ispell-program-name "aspell")
+(setq flyspell-issue-message-flag nil)
+;; spell check comments in prog-mode
+(dolist (mode-hook '(c-mode-hook
+                     javascript-mode-hook
+                     go-mode-hook
+                     sql-mode-hook
+                     scala-mode-hook
+                     python-mode-hook
+                     emacs-lisp-mode-hook))
+  (add-hook mode-hook 'flyspell-prog-mode))
+
+;;;; auto-mode-alist
+(add-to-list 'auto-mode-alist '("\\.js$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.py$" . python-mode))
+(add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
+(add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
+(add-to-list 'auto-mode-alist '("\\.html$" . html-mode))
 
 ;;; .emacs ends here
