@@ -8,3 +8,8 @@ export LANG=en_US
 export TERM=xterm-color
 export GREP_OPTIONS='--color=auto' GREP_COLOR='1;32'
 export CLICOLOR=1
+
+# Bash history size. Default is 500.
+export HISTSIZE='3000'
+export HISTFILESIZE="${HISTSIZE}"
+export HISTCONTROL='ignoreboth'
