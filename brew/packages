@@ -6,3 +6,4 @@ libffi
 python3
 readline
 wget
+gnuplot --with-qt
