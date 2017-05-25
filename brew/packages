@@ -1,5 +1,6 @@
 tmux
 docker
+gcc
 git
 go
 libffi
