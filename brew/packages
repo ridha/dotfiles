@@ -1,10 +1,22 @@
+aspell
 tmux
+cmake
 docker
+ffmpeg
 gcc
 git
 go
+iperf
 libffi
+openssl
 python3
 readline
 wget
 gnuplot --with-qt
+readline
+sbt
+scala
+scalariform
+terraform
+tree
+wrk
