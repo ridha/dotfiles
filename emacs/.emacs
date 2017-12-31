@@ -44,6 +44,8 @@
 
 (setenv "PATH" (concat (getenv "PATH") ":" "/usr/local/bin/"))
 
+(setq shell-file-name "/bin/bash")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Custom commands
 
@@ -71,9 +73,12 @@
   (package-install 'use-package))
 
 (require 'use-package)
+(require 'yasnippet)
 
 (use-package auto-complete)
 (use-package yaml-mode)
+
+(yas-global-mode 1)
 
 ;;;;;;;;;;;
 ;; ido-mode
@@ -98,9 +103,9 @@
 ;; highlight-parentheses-mode
 
 (define-globalized-minor-mode global-highlight-parentheses-mode
-  highlight-parentheses-mode
-  (lambda ()
-    (highlight-parentheses-mode t)))
+ highlight-parentheses-mode
+ (lambda ()
+   (highlight-parentheses-mode t)))
 (global-highlight-parentheses-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -122,6 +127,31 @@
 (setq elpy-disable-backend-error-display 1)
 
 (setq flymake-gui-warnings-enabled nil)
+(setq ropemacs-enable-autoimport t)
+
+(global-auto-complete-mode t)
+(add-hook 'python-mode-hook 'auto-complete-mode)
+
+(autoload 'jedi:setup "jedi" nil t)
+(add-hook 'python-mode-hook 'jedi:ac-setup)
+(setq jedi:complete-on-dot t)
+
+(fset 'set-pdb-trace
+   [?\C-a ?\C-m up ?\C-i ?i ?m ?p ?o ?r ?t ?  ?i ?p ?d ?b ?\C-m ?i ?p ?d ?b ?. ?s ?e ?t ?_ ?t ?r ?a ?c ?e ?( ?)])
+(global-set-key "\C-xa" 'set-pdb-trace)
+
+(add-hook 'after-init-hook #'global-flycheck-mode)
+(add-hook 'python-mode-hook '(lambda ()
+							   (setq python-indent 4)))
+
+(require 'py-autopep8)
+(setq py-autopep8-options '("--max-line-length=132"))
+
+
+;;;;;; to enable in all buffers
+(require 'autopair)
+(autopair-global-mode)
+
 
 ;;;;; flyspell-mode
 (setq-default ispell-program-name "aspell")
@@ -146,3 +176,4 @@
 (add-to-list 'auto-mode-alist '("\\.html$" . html-mode))
 
 ;;; .emacs ends here
+(set-default-font "Monaco 16")
