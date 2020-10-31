@@ -63,9 +63,9 @@
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
                          ("marmalade" . "http://marmalade-repo.org/packages/")
-                         ("melpa-stable" . "http://melpa-stable.milkbox.net/packages/")
-                         ("melpa" . "http://melpa.org/packages/")
-                         ("melpa-milkbox" . "http://melpa.milkbox.net/packages/")))
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")
+                         ("melpa" . "https://melpa.org/packages/")
+                         ("melpa-milkbox" . "https://stable.melpa.org/packages/")))
 
 (package-initialize)
 
@@ -103,9 +103,9 @@
 ;; highlight-parentheses-mode
 
 (define-globalized-minor-mode global-highlight-parentheses-mode
- highlight-parentheses-mode
- (lambda ()
-   (highlight-parentheses-mode t)))
+highlight-parentheses-mode
+(lambda ()
+  (highlight-parentheses-mode t)))
 (global-highlight-parentheses-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -176,4 +176,4 @@
 (add-to-list 'auto-mode-alist '("\\.html$" . html-mode))
 
 ;;; .emacs ends here
-(set-default-font "Monaco 16")
+(set-frame-font "Monaco 16")
