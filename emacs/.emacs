@@ -62,7 +62,6 @@
 
 (require 'package)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("marmalade" . "http://marmalade-repo.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")
                          ("melpa-milkbox" . "https://stable.melpa.org/packages/")))
@@ -167,6 +166,7 @@ highlight-parentheses-mode
   (add-hook mode-hook 'flyspell-prog-mode))
 
 ;;;; auto-mode-alist
+(add-to-list 'auto-mode-alist '("\\.go$" . go-mode))
 (add-to-list 'auto-mode-alist '("\\.js$" . javascript-mode))
 (add-to-list 'auto-mode-alist '("\\.json$" . javascript-mode))
 (add-to-list 'auto-mode-alist '("\\.ya?ml$" . yaml-mode))
@@ -174,6 +174,74 @@ highlight-parentheses-mode
 (add-to-list 'auto-mode-alist '("\\.scala$" . scala-mode))
 (add-to-list 'auto-mode-alist '("\\.css$" . css-mode))
 (add-to-list 'auto-mode-alist '("\\.html$" . html-mode))
+
+(setq typescript-indent-level 2)
+(add-hook 'text-mode-hook 'flyspell-mode)
+
+;;Load Go-specific language syntax
+(add-hook 'before-save-hook 'gofmt-before-save)
+
+;;Custom Compile Command
+(defun go-mode-setup ()
+  (linum-mode 1)
+  (go-eldoc-setup)
+  (setq gofmt-command "goimports")
+  (add-hook 'before-save-hook 'gofmt-before-save)
+  (local-set-key (kbd "M-.") 'godef-jump)
+  (setq compile-command "echo Building... && go build -v && echo Testing... && go test -v && echo Linter... && golint")
+  (setq compilation-read-command nil)
+  ;;  (define-key (current-local-map) "\C-c\C-c" 'compile)
+  (local-set-key (kbd "M-,") 'compile)
+(add-hook 'go-mode-hook 'go-mode-setup)
+
+;;Load auto-complete
+(ac-config-default)
+(require 'auto-complete-config)
+(require 'go-autocomplete)
+
+;;Go rename
+(require 'go-rename)
+
+;;Configure golint
+(add-hook 'go-mode-hook #'flymake-go-staticcheck-enable)
+(add-hook 'go-mode-hook #'flymake-mode)
+
+(add-to-list 'load-path (concat (getenv "GOPATH")  "/src/github.com/golang/lint/misc/emacs"))
+(require 'golint)
+
+;;Smaller compilation buffer
+(setq compilation-window-height 14)
+(defun my-compilation-hook ()
+  (when (not (get-buffer-window "*compilation*"))
+    (save-selected-window
+      (save-excursion
+        (let* ((w (split-window-vertically))
+               (h (window-height w)))
+          (select-window w)
+          (switch-to-buffer "*compilation*")
+          (shrink-window (- h compilation-window-height)))))))
+(add-hook 'compilation-mode-hook 'my-compilation-hook)
+
+;;Other Key bindings
+(global-set-key (kbd "C-c C-c") 'comment-or-uncomment-region)
+
+;;Compilation autoscroll
+(setq compilation-scroll-output t)
+
+(setq x-super-keysym 'meta)
+
+(eval-after-load 'flycheck
+  (progn
+    (require 'flycheck-kotlin)
+    (flycheck-kotlin-setup)))
+
+(require 'flycheck-kotlin)
+(flycheck-kotlin-setup)
+
+(setenv "GO111MODULE" "on")
+(use-package flycheck-golangci-lint
+  :ensure t
+  :hook (go-mode . flycheck-golangci-lint-setup))
 
 ;;; .emacs ends here
 (set-frame-font "Monaco 16")
